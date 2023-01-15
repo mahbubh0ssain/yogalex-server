@@ -48,17 +48,27 @@ app.put("/user/:email", async (req, res) => {
     { $set: req.body },
     { upsert: true }
   );
-
-  // const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-  //   expiresIn: "1d",
-  // });
   res.send({ result });
 });
 
+//get admin role
 app.get("/get-role/:email", async (req, res) => {
   const email = req.params.email;
   const result = await UsersCollection.findOne({ email });
   res.send(result);
+});
+
+// get all users by admin
+app.get("/get-users/:email", async (req, res) => {
+  const email = req.params.email;
+  const isAdmin = await UsersCollection.findOne({ email });
+  if (isAdmin && isAdmin?.role === "admin") {
+    const users = await UsersCollection.find({}).toArray();
+    const result = users.filter((user) => user?.role !== "admin");
+    res.send(result);
+  } else {
+    return res.send("Unauthorized user request");
+  }
 });
 
 // bookingCollection
