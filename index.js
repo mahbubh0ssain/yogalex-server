@@ -37,6 +37,30 @@ app.post("/jwt/:email", (req, res) => {
   res.send(result);
 });
 
+// users collection
+const UsersCollection = client.db("ChoshmaGhor").collection("usersCollection");
+
+// save user ino
+app.put("/user/:email", async (req, res) => {
+  const email = req.params.email;
+  const result = await UsersCollection.updateOne(
+    { email: email },
+    { $set: req.body },
+    { upsert: true }
+  );
+
+  // const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+  //   expiresIn: "1d",
+  // });
+  res.send({ result });
+});
+
+app.get("/get-role/:email", async (req, res) => {
+  const email = req.params.email;
+  const result = await UsersCollection.findOne({ email });
+  res.send(result);
+});
+
 // bookingCollection
 const BookingCollection = client
   .db("ChoshmaGhor")
@@ -103,6 +127,13 @@ const TrainersCollection = client
 // get all trainers
 app.get("/trainer", async (req, res) => {
   const result = await TrainersCollection.find().toArray();
+  res.send(result);
+});
+
+// post trainer collection
+app.post("/trainer", async (req, res) => {
+  const data = req.body;
+  const result = await TrainersCollection.insertOne(data);
   res.send(result);
 });
 
