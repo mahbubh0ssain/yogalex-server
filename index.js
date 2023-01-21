@@ -71,14 +71,13 @@ app.get("/get-users/:email", async (req, res) => {
   }
 });
 
-//delete user by admin
 // delete book info by id
 app.delete("/deleteUser", async (req, res) => {
   try {
     const id = req.query.id;
 
     const result = await UsersCollection.deleteOne({ _id: ObjectId(id) });
-    
+
     res.send(result);
   } catch (err) {
     console.error(err);
@@ -152,6 +151,17 @@ const TrainersCollection = client
 app.get("/trainer", async (req, res) => {
   const result = await TrainersCollection.find().toArray();
   res.send(result);
+});
+
+// delete trainer by id
+app.delete("/deleteTrainer", async (req, res) => {
+  try {
+    const id = req.query.id;
+    const result = await TrainersCollection.deleteOne({ _id: ObjectId(id) });
+    res.send(result);
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 // post trainer collection
