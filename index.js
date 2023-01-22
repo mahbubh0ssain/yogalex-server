@@ -110,6 +110,22 @@ const BookedCollection = client
 app.post("/booked", async (req, res) => {
   try {
     const bookingInfo = req.body;
+    const query = { date: bookingInfo?.date, slot: bookingInfo?.slot };
+
+    const isExist = await BookedCollection.findOne(query);
+
+    if (isExist || !isExist) {
+      const updateInSlot = await BookingCollection.findOne({
+        time: bookingInfo?.slot,
+      });
+      const update = updateInSlot?.seats - 1;
+      await BookingCollection.updateOne(
+        {
+          time: bookingInfo?.slot,
+        },
+        { $set: { seats: update } }
+      );
+    }
     const result = await BookedCollection.insertOne(bookingInfo);
     res.send({
       status: true,
