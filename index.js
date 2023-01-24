@@ -169,6 +169,16 @@ app.get("/trainer", async (req, res) => {
   res.send(result);
 });
 
+//get trainer by id
+
+app.get("/trainer/:id", async (req, res) => {
+  const id = req?.params;
+  const result = await TrainersCollection.findOne({
+    _id: ObjectId(id),
+  });
+  res.send(result);
+});
+
 // delete trainer by id
 app.delete("/deleteTrainer", async (req, res) => {
   try {
