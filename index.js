@@ -30,32 +30,20 @@ const dbConnect = async () => {
 };
 dbConnect();
 
-//generate jwt and send token
-app.post("/jwt/:email", (req, res) => {
-  const email = req.params.email;
-  const result = jwt.sign(email, process.env.Token_Code);
-  res.send(result);
-});
-
 // users collection
 const UsersCollection = client.db("ChoshmaGhor").collection("usersCollection");
 
 // save user ino
 app.put("/user/:email", async (req, res) => {
-  const email = req.params.email;
+  const email = req?.params?.email;
+  const user = req?.body.user;
   const result = await UsersCollection.updateOne(
     { email: email },
     { $set: req.body },
     { upsert: true }
   );
-  res.send({ result });
-});
-
-//get admin role
-app.get("/get-role/:email", async (req, res) => {
-  const email = req.params.email;
-  const result = await UsersCollection.findOne({ email });
-  res.send(result);
+  const token = jwt.sign(email, process.env.Token_Code);
+  res.send({ result, token });
 });
 
 // get all users by admin
@@ -69,6 +57,13 @@ app.get("/get-users/:email", async (req, res) => {
   } else {
     return res.send("Unauthorized user request");
   }
+});
+
+//get admin role
+app.get("/get-role/:email", async (req, res) => {
+  const email = req.params.email;
+  const result = await UsersCollection.findOne({ email });
+  res.send(result);
 });
 
 // delete book info by id
@@ -132,7 +127,7 @@ app.post("/booked", async (req, res) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 });
 
@@ -163,6 +158,13 @@ const TrainersCollection = client
   .db("ChoshmaGhor")
   .collection("trainersCollection");
 
+// post trainer collection
+app.post("/trainer", async (req, res) => {
+  const data = req.body;
+  const result = await TrainersCollection.insertOne(data);
+  res.send(result);
+});
+
 // get all trainers
 app.get("/trainer", async (req, res) => {
   const result = await TrainersCollection.find().toArray();
@@ -170,7 +172,6 @@ app.get("/trainer", async (req, res) => {
 });
 
 //get trainer by id
-
 app.get("/trainer/:id", async (req, res) => {
   const id = req?.params;
   const result = await TrainersCollection.findOne({
@@ -188,13 +189,6 @@ app.delete("/deleteTrainer", async (req, res) => {
   } catch (err) {
     console.error(err);
   }
-});
-
-// post trainer collection
-app.post("/trainer", async (req, res) => {
-  const data = req.body;
-  const result = await TrainersCollection.insertOne(data);
-  res.send(result);
 });
 
 // listening the server
