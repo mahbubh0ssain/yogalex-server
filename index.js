@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Chosha Ghor server is runing successfully");
+  res.send("Yogalax server is running successfully");
 });
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@choshmaghor.zsozb10.mongodb.net/?retryWrites=true&w=majority`;
@@ -193,5 +193,5 @@ app.delete("/deleteTrainer", async (req, res) => {
 
 // listening the server
 app.listen(port, () => {
-  console.log("Yogalax server is runing successfully on", port);
+  console.log("Yogalax server is running successfully on", port);
 });
