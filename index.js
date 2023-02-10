@@ -193,5 +193,5 @@ app.delete("/deleteTrainer", async (req, res) => {
 
 // listening the server
 app.listen(port, () => {
-  console.log("Choshma Ghor server is runing successfully on", port);
+  console.log("Yogalax server is runing successfully on", port);
 });
